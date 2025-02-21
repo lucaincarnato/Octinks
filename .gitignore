@@ -1,0 +1,28 @@
+# Swift Playground
+*.xcplaygrounduser
+
+# macOS system files
+.DS_Store
+*.swp
+
+# Xcode specific
+*.xcworkspace/
+*.xcuserdata/
+*.xccheckout
+*.moved-aside
+
+# Build & Derived Data
+build/
+DerivedData/
+
+# Swift Package Manager
+/.build/
+/.swiftpm/
+
+# User-specific files
+*.pbxuser
+*.mode1v3
+*.mode2v3
+
+# Logs
+*.log
