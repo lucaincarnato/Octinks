@@ -451,7 +451,7 @@ private struct SqueezeView: View {
                     onboardingStatus += 1
                     if onboardingStatus > 4 { onboardingStatus = 0 }
                 } label: {
-                    Text(canMove ? "Next" : "I don't have the Apple Pencil Pro")
+                    Text("Next")
                         .bold()
                         .padding(.horizontal)
                         .font(.system(size: 50))
