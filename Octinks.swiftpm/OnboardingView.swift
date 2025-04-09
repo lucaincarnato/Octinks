@@ -447,17 +447,19 @@ private struct SqueezeView: View {
                 // Apple Pencil hover detection and drawing system
                 HoverView(squid: $squid, hoverPosition: $hoverPosition, strokeRect: $strokeRect, canvasView: $canvasView)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                Button() {
-                    onboardingStatus += 1
-                    if onboardingStatus > 4 { onboardingStatus = 0 }
-                } label: {
-                    Text(canMove ? "Next" : "I don't have the Apple Pencil Pro")
-                        .bold()
-                        .padding(.horizontal)
-                        .font(.system(size: 50))
+                if canMove{
+                    Button() {
+                        onboardingStatus += 1
+                        if onboardingStatus > 4 { onboardingStatus = 0 }
+                    } label: {
+                        Text("Next")
+                            .bold()
+                            .padding(.horizontal)
+                            .font(.system(size: 50))
+                    }
+                    .buttonStyle(.bordered)
+                    .position(x: geometry.size.width/2, y: geometry.size.height * 0.6)
                 }
-                .buttonStyle(.bordered)
-                .position(x: geometry.size.width/2, y: geometry.size.height * 0.6)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             // Creates an internal clock from which all time sensitive operations will be synched

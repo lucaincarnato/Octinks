@@ -16,6 +16,8 @@ let package = Package(
         .iOSApplication(
             name: "Octinks",
             targets: ["AppModule"],
+            bundleIdentifier: "com.LucaIncarnato.OctinksSSC",
+            teamIdentifier: "W3B7XH945C",
             displayVersion: "1.0",
             bundleVersion: "1",
             appIcon: .asset("AppIcon"),
@@ -30,7 +32,7 @@ let package = Package(
                 .landscapeLeft,
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
             ],
-            appCategory: .arcadeGames
+            appCategory: .kidsGames
         )
     ],
     targets: [
