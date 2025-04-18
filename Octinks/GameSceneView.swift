@@ -11,8 +11,8 @@ import Foundation
 
 struct GameSceneView: View {
     @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/2 // Valore massimo di spostamento
-    
+    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
+
     // Game state variable
     @State var gameOver: Bool = false
     @State var deadOctopuses: Int = 0

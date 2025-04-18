@@ -99,7 +99,7 @@ private struct DisclaimerView: View {
 // Shows only the movement tutorial
 private struct MovementView: View {
     @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/2 // Valore massimo di spostamento
+    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
 
     @Binding var onboardingStatus: Int
     @State var canMove: Bool = false
@@ -137,7 +137,7 @@ private struct MovementView: View {
                     .position(x: geometry.size.width * 0.95, y: geometry.size.height / 2)
                 // Onboarding's text
                 VStack{
-                    Text("Hover the Apple Pencil to move")
+                    Text("Hover the Apple Pencil or tilt the iPad to move")
                         .font(.system(size: 50))
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.accentColor)
@@ -208,8 +208,8 @@ private struct MovementView: View {
 // Shows how to delete objects
 private struct EnemiesView: View {
     @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/2 // Valore massimo di spostamento
-    
+    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
+
     @Binding var onboardingStatus: Int
     @State var canMove: Bool = false
     
@@ -258,7 +258,7 @@ private struct EnemiesView: View {
                     .position(x: geometry.size.width * 0.95, y: geometry.size.height / 2)
                 // Onboarding's text
                 VStack {
-                    Text("Scribble over litter with the Apple Pencil\nto delete it")
+                    Text("Draw over litter\nto delete it")
                         .font(.system(size: 50))
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.accentColor)
@@ -367,8 +367,8 @@ private struct EnemiesView: View {
 // Shows the squeeze ultimate
 private struct SqueezeView: View {
     @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/2 // Valore massimo di spostamento
-    
+    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
+
     @Binding var onboardingStatus: Int
     @State var canMove: Bool = false
     
@@ -417,7 +417,7 @@ private struct SqueezeView: View {
                     .position(x: geometry.size.width * 0.95, y: geometry.size.height / 2)
                 // Onboarding's text
                 VStack {
-                    Text("Squeeze the Apple Pencil Pro\nwhen ink is full to delete all the litter")
+                    Text("Squeeze the Apple Pencil Pro or shake the iPad\nwhen ink is full to delete all the litter")
                         .font(.system(size: 50))
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.accentColor)
