@@ -434,6 +434,19 @@ private struct SqueezeView: View {
                             }
                         }
                     }
+                    .background(
+                        ShakeDetector {
+                            if squid.canEjectInk() {
+                                // Executing on the main thread, it forces a refresh and deletes also the sprites
+                                DispatchQueue.main.async {
+                                    canMove = true
+                                    wastes = []
+                                    squid.ink = 0.5
+                                }
+                            }
+                        }
+                        .frame(width: 0, height: 0)
+                    )
                     .id(hoverTick) // Associate an unique id for every frame to ignite changes
                 // Rendering of all obstacles
                 ForEach(wastes) { waste in
