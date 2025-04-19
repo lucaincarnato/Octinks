@@ -10,9 +10,6 @@ import PencilKit
 import Foundation
 
 struct GameSceneView: View {
-    @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
-
     // Game state variable
     @State var gameOver: Bool = false
     @State var deadOctopuses: Int = 0
@@ -114,18 +111,6 @@ struct GameSceneView: View {
                             }
                         }
                     }
-                    .background(
-                        ShakeDetector {
-                            if squid.canEjectInk() {
-                                // Executing on the main thread, it forces a refresh and deletes also the sprites
-                                DispatchQueue.main.async {
-                                    squid.ink = 0
-                                    wastes = []
-                                }
-                            }
-                        }
-                        .frame(width: 0, height: 0)
-                    )
                     .id(hoverTick) // Associate an unique id for every frame to ignite changes
                 // Rendering of all obstacles
                 ForEach(wastes) { waste in
@@ -195,9 +180,7 @@ struct GameSceneView: View {
                 removeExcesses()
                 // Transfers only vertical position from the hover to the squid
                 let bufferX = squid.position?.x ?? geometry.size.width/2 // Allows the squid to remain in position once pencil leaves the screen
-                squid.position?.x = (hoverPosition?.x ?? bufferX) + CGFloat(motion.roll) * maxOffset
-                if (squid.position!.x <= 0) { squid.position?.x = 0.01 }
-                else if (squid.position!.x >= geometry.size.width) { squid.position?.x = geometry.size.width - 0.01 }
+                squid.position?.x = hoverPosition?.x ?? bufferX   
                 // Changes the tick counter
                 hoverTick += 1
                 if hoverTick > 60 { hoverTick = 0 }

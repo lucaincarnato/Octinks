@@ -98,9 +98,6 @@ private struct DisclaimerView: View {
 
 // Shows only the movement tutorial
 private struct MovementView: View {
-    @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
-
     @Binding var onboardingStatus: Int
     @State var canMove: Bool = false
     
@@ -137,7 +134,7 @@ private struct MovementView: View {
                     .position(x: geometry.size.width * 0.95, y: geometry.size.height / 2)
                 // Onboarding's text
                 VStack{
-                    Text("Hover the Apple Pencil or tilt the iPad to move")
+                    Text("Hover the Apple Pencil to move")
                         .font(.system(size: 50))
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.accentColor)
@@ -177,11 +174,9 @@ private struct MovementView: View {
             // Creates an internal clock from which all time sensitive operations will be synched
             .onReceive(frames) { _ in
                 strokeRect = nil
-                // Transfers only horizontal position from the hover to the squid
-                let bufferX = squid.position?.x ?? geometry.size.width/2 // Allows the squid to remain in position once pencil leaves the screen
-                squid.position?.x = (hoverPosition?.x ?? bufferX) + CGFloat(motion.roll) * maxOffset
-                if (squid.position!.x <= 0) { squid.position?.x = 0.01 }
-                else if (squid.position!.x >= geometry.size.width) { squid.position?.x = geometry.size.width - 0.01 }
+                // Transfers only vertical position from the hover to the squid
+                let bufferX = squid.position?.x ?? geometry.size.height/2 // Allows the squid to remain in position once pencil leaves the screen
+                squid.position?.x = hoverPosition?.x ?? bufferX
                 // Changes the tick counter
                 hoverTick += 1
                 if hoverTick > 60 { hoverTick = 0 }
@@ -192,7 +187,7 @@ private struct MovementView: View {
                     squid.position = CGPoint(x: geometry.size.width/2, y: geometry.size.height - 1.5*squid.height) // Starting position
                 }
             }
-            .onChange(of: squid.position?.x) {
+            .onChange(of: hoverPosition) {
                 canMove = true
             }
         }
@@ -207,9 +202,6 @@ private struct MovementView: View {
 
 // Shows how to delete objects
 private struct EnemiesView: View {
-    @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
-
     @Binding var onboardingStatus: Int
     @State var canMove: Bool = false
     
@@ -258,7 +250,7 @@ private struct EnemiesView: View {
                     .position(x: geometry.size.width * 0.95, y: geometry.size.height / 2)
                 // Onboarding's text
                 VStack {
-                    Text("Draw over litter\nto delete it")
+                    Text("Scribble over litter with the Apple Pencil\nto delete it")
                         .font(.system(size: 50))
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.accentColor)
@@ -324,9 +316,7 @@ private struct EnemiesView: View {
                 strokeRect = nil
                 // Transfers only vertical position from the hover to the squid
                 let bufferX = squid.position?.x ?? geometry.size.height/2 // Allows the squid to remain in position once pencil leaves the screen
-                squid.position?.x = (hoverPosition?.x ?? bufferX) + CGFloat(motion.roll) * maxOffset
-                if (squid.position!.x <= 0) { squid.position?.x = 0.01 }
-                else if (squid.position!.x >= geometry.size.width) { squid.position?.x = geometry.size.width - 0.01 }
+                squid.position?.x = hoverPosition?.x ?? bufferX   
                 // Changes the tick counter
                 hoverTick += 1
                 if hoverTick > 60 { hoverTick = 0 }
@@ -366,9 +356,6 @@ private struct EnemiesView: View {
 
 // Shows the squeeze ultimate
 private struct SqueezeView: View {
-    @ObservedObject private var motion = MotionManager()
-    private let maxOffset: CGFloat = UIScreen.main.bounds.width/8 // Valore massimo di spostamento
-
     @Binding var onboardingStatus: Int
     @State var canMove: Bool = false
     
@@ -417,7 +404,7 @@ private struct SqueezeView: View {
                     .position(x: geometry.size.width * 0.95, y: geometry.size.height / 2)
                 // Onboarding's text
                 VStack {
-                    Text("Squeeze the Apple Pencil Pro or shake the iPad\nwhen ink is full to delete all the litter")
+                    Text("Squeeze the Apple Pencil Pro\nwhen ink is full to delete all the litter")
                         .font(.system(size: 50))
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.accentColor)
@@ -447,19 +434,6 @@ private struct SqueezeView: View {
                             }
                         }
                     }
-                    .background(
-                        ShakeDetector {
-                            if squid.canEjectInk() {
-                                // Executing on the main thread, it forces a refresh and deletes also the sprites
-                                DispatchQueue.main.async {
-                                    canMove = true
-                                    wastes = []
-                                    squid.ink = 0.5
-                                }
-                            }
-                        }
-                        .frame(width: 0, height: 0)
-                    )
                     .id(hoverTick) // Associate an unique id for every frame to ignite changes
                 // Rendering of all obstacles
                 ForEach(wastes) { waste in
@@ -512,9 +486,7 @@ private struct SqueezeView: View {
                 strokeRect = nil
                 // Transfers only vertical position from the hover to the squid
                 let bufferX = squid.position?.x ?? geometry.size.height/2 // Allows the squid to remain in position once pencil leaves the screen
-                squid.position?.x = (hoverPosition?.x ?? bufferX) + CGFloat(motion.roll) * maxOffset
-                if (squid.position!.x <= 0) { squid.position?.x = 0.01 }
-                else if (squid.position!.x >= geometry.size.width) { squid.position?.x = geometry.size.width - 0.01 }
+                squid.position?.x = hoverPosition?.x ?? bufferX
                 // Changes the tick counter
                 hoverTick += 1
                 if hoverTick > 60 { hoverTick = 0 }
