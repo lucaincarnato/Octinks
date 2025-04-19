@@ -15,6 +15,7 @@ struct HoverView: UIViewRepresentable {
     @Binding var hoverPosition: CGPoint? // Hover position
     @Binding var strokeRect: CGRect? // Stroke collider
     @Binding var canvasView: PKCanvasView // Drawing's canvas
+    var inkEjection: () -> Void // Call to ink ejection's method
     
     // Method responsible for the connection between UIKit and SwiftUI
     func makeUIView(context: Context) -> PKCanvasView {
@@ -28,13 +29,20 @@ struct HoverView: UIViewRepresentable {
         if #available(iOS 16.0, *) {
             let hoverGestureRecognizer = UIHoverGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleHover(_:)))
             canvasView.addGestureRecognizer(hoverGestureRecognizer)
-            // Add recognizer for two finger touch
+            // Add recognizer for two finger pan
             let twoFingerPanRecognizer = UIPanGestureRecognizer(
                 target: context.coordinator,
                 action: #selector(Coordinator.handleTwoFingerPan(_:)))
             twoFingerPanRecognizer.minimumNumberOfTouches = 2
             twoFingerPanRecognizer.maximumNumberOfTouches = 2
             canvasView.addGestureRecognizer(twoFingerPanRecognizer)
+            // Add recognizer for three finger touch
+            let threeFingerTouchRecognizer = UITapGestureRecognizer(
+                target: context.coordinator,
+                action: #selector(Coordinator.handleThreeFingerTouch(_:)))
+            threeFingerTouchRecognizer.numberOfTouchesRequired = 3
+            canvasView.addGestureRecognizer(threeFingerTouchRecognizer)
+
         }
         // Returns what the SwiftUI view will show
         return canvasView
@@ -44,7 +52,7 @@ struct HoverView: UIViewRepresentable {
     
     // Instance cordinator
     func makeCoordinator() -> Coordinator {
-        Coordinator(squid: $squid, hoverPosition: $hoverPosition, strokeRect: $strokeRect, canvasView: $canvasView)
+        Coordinator(squid: $squid, hoverPosition: $hoverPosition, strokeRect: $strokeRect, canvasView: $canvasView, inkEjection: inkEjection)
     }
 }
 
@@ -54,6 +62,7 @@ class Coordinator: NSObject, PKCanvasViewDelegate {
     @Binding var hoverPosition: CGPoint? // Hover position
     @Binding var strokeRect: CGRect? // Stroke collider
     @Binding var canvasView: PKCanvasView // Drawing's canvas
+    var inkEjection: () -> Void // Call to ink ejection's method
     
     var inkAvailable: Bool = true // The possibility of using the ink related to squid's properties
     private var strokeTimers: [Int: Timer] = [:] // Vector of timers related to all the strokes drawn on the screen
@@ -63,11 +72,12 @@ class Coordinator: NSObject, PKCanvasViewDelegate {
     private var INK_QUANTITY: Float = 0.1
     
     // Initializer with custom values
-    init(squid: Binding<Squid>, hoverPosition: Binding<CGPoint?>, strokeRect: Binding<CGRect?>, canvasView: Binding<PKCanvasView>) {
+    init(squid: Binding<Squid>, hoverPosition: Binding<CGPoint?>, strokeRect: Binding<CGRect?>, canvasView: Binding<PKCanvasView>, inkEjection: @escaping () -> Void) {
         self._squid = squid
         self._hoverPosition = hoverPosition
         self._strokeRect = strokeRect
         self._canvasView = canvasView
+        self.inkEjection = inkEjection
     }
 
     // Handler for two finger panning
@@ -98,6 +108,18 @@ class Coordinator: NSObject, PKCanvasViewDelegate {
             DispatchQueue.main.async {
                 self.hoverPosition = nil
             }
+            break
+        }
+    }
+    
+    // Manage the three finger touch for ink ejection
+    @objc func handleThreeFingerTouch(_ recognizer: UITapGestureRecognizer) {
+        switch recognizer.state {
+        case .ended:
+            DispatchQueue.main.async {
+                self.inkEjection()
+            }
+        default:
             break
         }
     }

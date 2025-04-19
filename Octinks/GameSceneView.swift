@@ -122,7 +122,16 @@ struct GameSceneView: View {
                         .position(waste.position)
                 }
                 // Apple Pencil hover detection and drawing system
-                HoverView(squid: $squid, hoverPosition: $hoverPosition, strokeRect: $strokeRect, canvasView: $canvasView)
+                HoverView(squid: $squid, hoverPosition: $hoverPosition, strokeRect: $strokeRect, canvasView: $canvasView, inkEjection: {
+                    // Used to eject ink with fingers
+                    if squid.canEjectInk() {
+                        // Executing on the main thread, it forces a refresh and deletes also the sprites
+                        DispatchQueue.main.async {
+                            squid.ink = 0
+                            wastes = []
+                        }
+                    }
+                })
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             // Shows death screen once the user dies
