@@ -28,6 +28,13 @@ struct HoverView: UIViewRepresentable {
         if #available(iOS 16.0, *) {
             let hoverGestureRecognizer = UIHoverGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleHover(_:)))
             canvasView.addGestureRecognizer(hoverGestureRecognizer)
+            // Add recognizer for two finger touch
+            let twoFingerPanRecognizer = UIPanGestureRecognizer(
+                target: context.coordinator,
+                action: #selector(Coordinator.handleTwoFingerPan(_:)))
+            twoFingerPanRecognizer.minimumNumberOfTouches = 2
+            twoFingerPanRecognizer.maximumNumberOfTouches = 2
+            canvasView.addGestureRecognizer(twoFingerPanRecognizer)
         }
         // Returns what the SwiftUI view will show
         return canvasView
@@ -62,6 +69,38 @@ class Coordinator: NSObject, PKCanvasViewDelegate {
         self._strokeRect = strokeRect
         self._canvasView = canvasView
     }
+
+    // Handler for two finger panning
+    @objc func handleTwoFingerPan(_ recognizer: UIPanGestureRecognizer) {
+        // Drawing managment system here because before drawing the user needs to pan, so the condition are checked before drawing
+        // Allow ink strokes if the player has enaugh ink for at least one stroke
+        if squid.ink >= 0.1 {
+            inkAvailable = true
+        }
+        // Enables or disables the drawing ability according to the ink availability
+        if inkAvailable {
+            canvasView.drawingGestureRecognizer.isEnabled = true
+        } else {
+            canvasView.drawingGestureRecognizer.isEnabled = false
+        }
+        // Set hoverPosition in the main thread (thus the self) according to how the user is acting with the two finger pan
+        let location = recognizer.location(in: recognizer.view)
+        switch recognizer.state {
+        case .began, .changed:
+            DispatchQueue.main.async {
+                self.hoverPosition = location
+            }
+        case .ended, .cancelled, .failed:
+            DispatchQueue.main.async {
+                self.hoverPosition = nil
+            }
+        default:
+            DispatchQueue.main.async {
+                self.hoverPosition = nil
+            }
+            break
+        }
+    }
     
     // Manage the Apple Pencil's hover
     @objc func handleHover(_ recognizer: UIHoverGestureRecognizer) {
@@ -79,11 +118,11 @@ class Coordinator: NSObject, PKCanvasViewDelegate {
         // Set hoverPosition in the main thread (thus the self) according to how the user is acting with the Apple Pencil's hover
         let location = recognizer.location(in: recognizer.view)
         switch recognizer.state {
-        case .changed:
+        case .began, .changed:
             DispatchQueue.main.async {
                 self.hoverPosition = location
             }
-        case .ended, .cancelled:
+        case .ended, .cancelled, .failed:
             DispatchQueue.main.async {
                 self.hoverPosition = nil
             }
