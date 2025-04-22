@@ -23,7 +23,7 @@ struct GameSceneView: View {
     
     // Characters
     @State var squid: Squid = Squid()
-    @State var wastes: [Waste] = [] // MARK: UNDERSTAND WHY THE MOVEMENT WITH HOVER HAPPENS ONLY IF THERE ARE WASTES INSTANCED
+    @State var wastes: [Waste] = []
     @State var dead: [DeadSquid] = []
     
     @State var hoverTick: Int = 0 // Describes how many frames ticks the squid's movement 
