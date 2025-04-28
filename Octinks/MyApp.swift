@@ -12,7 +12,7 @@ struct MyApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack{
-                TutorialView()
+                MainMenuView()
                     .preferredColorScheme(.light)
             }
         }

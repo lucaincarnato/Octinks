@@ -9,7 +9,7 @@ import SwiftUI
 import PencilKit
 
 struct TutorialView: View {
-    @State var onboardingStatus: Int = 0
+    @State var onboardingStatus: Int = 1
     
     // Disables animations when changing view
     init(){
@@ -17,82 +17,18 @@ struct TutorialView: View {
     }
     
     var body: some View {
-        NavigationStack{
-            switch onboardingStatus {
-            case 0:
-                DisclaimerView(onboardingStatus: $onboardingStatus)
-            case 1:
-                EnemiesView(onboardingStatus: $onboardingStatus)
-            case 2:
-                SqueezeView(onboardingStatus: $onboardingStatus)
-            case 3:
-                MovementView(onboardingStatus: $onboardingStatus)
-            case 4:
-                ObjectiveView(onboardingStatus: $onboardingStatus)
-            default:
-                Text("Something went wrong")
-            }
+        switch onboardingStatus {
+        case 1:
+            EnemiesView(onboardingStatus: $onboardingStatus)
+        case 2:
+            SqueezeView(onboardingStatus: $onboardingStatus)
+        case 3:
+            MovementView(onboardingStatus: $onboardingStatus)
+        case 4:
+            ObjectiveView(onboardingStatus: $onboardingStatus)
+        default:
+            Text("Something went wrong")
         }
-    }
-}
-
-// Shows only text to let user use iPad on landscape and Apple Pencil Pro
-private struct DisclaimerView: View {
-    @Binding var onboardingStatus: Int
-    
-    var body: some View {
-        // Game scene
-        GeometryReader { geometry in
-            ZStack {
-                // Background image
-                Image("seabed")
-                    .resizable()
-                    .ignoresSafeArea()
-                    .scaledToFill()
-                    .position(x: geometry.size.width/2, y: geometry.size.height/2)
-                
-                // Onboarding's text
-                VStack{
-                    Image("IconImage")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 150, height: 150)
-                    // Custom shape to show outline
-                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                        .overlay{
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color.accentColor, lineWidth: 1)
-                        }
-                        .padding()
-                    Text("Welcome to Octinks!")
-                        .font(.system(size: 50))
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(Color.accentColor)
-                        .bold()
-                    Text("Enjoy on iPad in landscape mode\nand with Apple Pencil Pro")
-                        .font(.system(size: 30))
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(Color.black.opacity(0.3))
-                        .bold()
-                }
-                .position(x: geometry.size.width/2, y: geometry.size.height * 0.35)
-                Button() {
-                    onboardingStatus += 1
-                    if onboardingStatus > 4 { onboardingStatus = 0 }
-                } label: {
-                    Text("Start")
-                        .bold()
-                        .padding(.horizontal)
-                        .font(.system(size: 50))
-                }
-                .buttonStyle(.bordered)
-                .position(x: geometry.size.width/2, y: geometry.size.height * 0.6)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        }
-        // Disables hierarchical navigation, in favor of content driven navigation
-        .navigationBarBackButtonHidden(true)
-        .frame(width: UIScreen.main.bounds.width, height:  UIScreen.main.bounds.height)
     }
 }
 
