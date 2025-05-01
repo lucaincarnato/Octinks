@@ -20,7 +20,7 @@ struct DeathScreenView: View {
         NavigationStack{
             // If the user clicks on the number it goes to the menu
             NavigationLink {
-                GameSceneView()
+                MainMenuView()
             } label: {
                 ZStack {
                     // Background image
