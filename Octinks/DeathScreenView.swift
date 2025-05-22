@@ -44,15 +44,15 @@ struct DeathScreenView: View {
                                     .frame(width: 300, height: 300)
                             }
                             Text("\(deadOctopuses)")
-                                .font(.system(size: 400))
+                                .font(.system(size: 300))
                                 .bold()
                                 .foregroundStyle(isWaiting ? Color.purple : Color.black)
                             Text("\(isWaiting ? " +" : "")")
-                                .font(.system(size: 400))
+                                .font(.system(size: 300))
                                 .bold()
                                 .foregroundStyle(Color.black)
                             Text("\(isWaiting ? " 1" : "")")
-                                .font(.system(size: 400))
+                                .font(.system(size: 300))
                                 .bold()
                                 .foregroundStyle(Color.pink) // Not accentColor because when disabled it is not shown
                             if (!isWaiting) {

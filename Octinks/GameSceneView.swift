@@ -84,7 +84,7 @@ struct GameSceneView: View {
                     // Counter for user's purpose
                     HStack {
                         Text("\(deadOctopuses)")
-                            .font(.system(size: 400))
+                            .font(.system(size: 300))
                             .foregroundColor(isPulsing ? Color.pink : Color.black.opacity(0.3)) // Changes the color every tick
                             .animation(.easeInOut(duration: 0.2), value: isPulsing) // Pulse the text every tick
                         Text("s")
